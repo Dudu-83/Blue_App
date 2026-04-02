@@ -1,9 +1,16 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Alert, Modal, View, ImageBackground, TouchableOpacity, StyleSheet, Text } from 'react-native';
+import { Alert, Modal, View, ImageBackground, TouchableOpacity, StyleSheet, Text, ScrollView } from 'react-native';
 import { MaterialIcons } from '@expo/vector-icons';
 import { CameraView, useCameraPermissions } from 'expo-camera';
+import { useVideoPlayer, VideoView } from 'expo-video';
 
 export default function App() {
+  const videoSource = require('./assets/video-icon.mp4');
+  const player = useVideoPlayer(videoSource, player => {
+      player.loop = true; // Exemplo: define looping
+      player.play(); // Exemplo: play automático
+    });
+
   const [permission, requestPermission] = useCameraPermissions();
   const [isCameraVisible, setIsCameraVisible] = useState(false);
   const [photo, setPhoto] = useState(null);
@@ -37,7 +44,7 @@ export default function App() {
   }
 
   return (
-    <View style={styles.container}>
+    <ScrollView style={styles.container}>
       <View style={styles.photo}>
         {photo && (
           <ImageBackground
@@ -71,8 +78,16 @@ export default function App() {
 
       <View>
         <Text style={styles.titulo}>
-          💙 Bem-vindo ao Blue--App! 💙
+          💙Bem-vindo ao Blue--App💙
         </Text>
+
+        <VideoView
+          style={styles.video}
+          player={player}
+          allowsFullscreen
+          allowsPictureInPicture
+          nativeControls // Mostra play/pause/slider nativo 
+          />
 
         <Text style={styles.text}>
           😁🤩 !! Estamos muito felizes em ter você aqui !! 🥳😉
@@ -96,7 +111,7 @@ export default function App() {
 
       </View>
 
-    </View>
+    </ScrollView>
   );
 }
 
@@ -191,19 +206,31 @@ const styles = StyleSheet.create({
   },
 
   titulo: {
-    backgroundColor: "#ffffff",
+    backgroundColor: "#00ffff",
     borderLeftWidth: 15,
     borderRightWidth: 15,
-    borderLeftColor: "#ffffff",
-    borderRightColor: "#ffffff",
-    borderRadius: 100,
-    margin: 30,
-    marginTop:28,
+    borderLeftColor: "#00ffff",
+    borderRightColor: "#00ffff",
+    borderRadius: 70,
+    margin: 12,
+    marginTop: 1,
     fontSize: 20,
     fontWeight: "bold",
     alignSelf: "center",
     alignItems: "center",
     textAlign: "center",
     justifyContent: "center",
-  }
+    height: 100,
+    padding: 32,
+  },
+
+  contentContainer: {
+    flex: 1,
+    paddingTop: 50,
+  },
+
+  video: {
+    width: '100%',
+    height: 300,
+  },
 });
